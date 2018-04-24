@@ -4,19 +4,19 @@ import random
 from requests import get
 from bs4 import BeautifulSoup
 
-from telebot import apihelper
+#from telebot import apihelper
  
-apihelper.proxy = {'http':'http://217.182.96.199:3128',
-                   }#'https':'https://169.255.225.4:53281'}
+#apihelper.proxy = {'http':'http://217.182.96.199:3128',
+#                   }#'https':'https://169.255.225.4:53281'}
 
-def listener(messages):
-    for m in messages:
-        if m.content_type == 'text':
-            print(str(m.chat.first_name) + " [" + str(m.chat.id) + "]: " + m.text)
+#def listener(messages):
+#    for m in messages:
+#        if m.content_type == 'text':
+#            print(str(m.chat.first_name) + " [" + str(m.chat.id) + "]: " + m.text)
             
 token = '576771008:AAFBb3PQjTJTW33ogZ_Xgru8S7HP_20wBbw'
 bot = telebot.TeleBot(token)
-bot.set_update_listener(listener)
+#bot.set_update_listener(listener)
 
         
 stickersList = ['CAADAgADAQADi607HFPFkz_ao3qOAg',
@@ -164,67 +164,9 @@ def get_start4(message):
     bot.send_message(message.chat.id, 'Качок')
     
 @bot.message_handler(commands = ['hata'])
-def get_start4(message):
+def get_start5(message):
     bot.send_message(message.chat.id, 'Без проблем')
     
-@bot.message_handler(commands = ['game'])
-def any_msg(message):
-    keyboard = types.InlineKeyboardMarkup()
-    callback_button = types.InlineKeyboardButton(text="Крутим", callback_data="test1")
-    keyboard.add(callback_button)
-    bot.send_message(message.chat.id, "Играем в бутылочу", reply_markup=keyboard)
-    
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    won = random.randrange(0, 2, 1)
-    if won == 0:
-        if call.message:
-            if call.data == "test1":
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Красава")
-    if won == 1:
-        if call.message:
-            if call.data == "test1":
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Лох")
-                
-@bot.message_handler(commands = ['weather'])
-def find_weather(message):
-    s_city = "Ufa,RU"
-    city_id = 0
-    appid = "ffcce017b2512cc3d358d2f46c860a1f"
-    try:
-        res = requests.get("http://api.openweathermap.org/data/2.5/find",
-                 params={'q': s_city, 'type': 'like', 'units': 'metric', 'APPID': appid})
-        data = res.json()
-        cities = ["{} ({})".format(d['name'], d['sys']['country'])
-              for d in data['list']]
-        print("city:", cities)
-        city_id = data['list'][0]['id']
-        print('city_id=', city_id)
-    except Exception as e:
-        print("Exception (find):", e)
-    pass
-    try:
-        res = requests.get("http://api.openweathermap.org/data/2.5/weather",
-                     params={'id': city_id, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
-        data = res.json()
-        
-        print("conditions:", data['weather'][0]['description'])
-        bot.send_message(message.chat.id, "Погода в УФЕ: "+data['weather'][0]['description'])
-        print("temp:", data['main']['temp'])
-        bot.send_message(message.chat.id, "Температура: "+str(data['main']['temp'])+"C°")
-        print("temp_min:", data['main']['temp_min'])
-        #bot.send_message(message.chat.id, "Температура:"+data['main']['temp'])
-        #print("temp_max:", data['main']['temp_max'])
-    except Exception as e:
-        print("Exception (weather):", e)
-    pass
-    #bot.send_message(message.chat.id, 'Что хотите передать?')
-#@bot.message_handler(func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_AGE.value)
-#def get_upd(message):
-    #rnd = random.randrange(0, 104, 1)
-    #bot.send_sticker(message.chat.id, stickersList[rnd])
-#@bot.message_handler(chat_id = message.chat.id)
-
 
 @bot.message_handler(content_types=["sticker"])
 def repeat_all_messages(message): 
@@ -240,19 +182,5 @@ def sand_txt(message):
         for i in message.text:
             if i != "*": s = s+i
         bot.send_message(GROUP_ID, s)
-    #f_id = str(message.sticker.file_id)
-    #print("'",f_id,"',", sep='')
-#@bot.message_handler(commands=['start'])
-#def start_bot():
-#    repeat_all_messages              
-#@bot.message_handler(content_types=["text"])
-#def repeat_all_messages2(message): 
-#    chanse = 0 # random.randrange(0, 3, 1)
-#    rnd = random.randrange(0, 104, 1)
-#    if chanse == 0:
-#        bot.send_sticker(message.chat.id, stickersList[rnd])
-    
-def hello(message):
-    bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'.format(name=message.text))
-
+        
 bot.polling(none_stop=True)
